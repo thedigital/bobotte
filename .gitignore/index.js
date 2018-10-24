@@ -10,7 +10,7 @@ client.on('message', function (message) {
     }catch (error){} else {
     spamCounter.add(msgauthor), setTimeout(() => { spamCounter.delete(msgauthor) }, 2000)
     }
-    if (!message.author.bot || !message.member.roles.get('504656114474811393')) if (message.content.includes("https://discord.gg/") || message.content.includes("https://discordapp.com/invite/")) try {message.author.send("Vous n'avez pas l'autorisation de poster des liens vers d'autres discord."), message.delete()} catch (error) {console.log(error)}
+    if (!message.author.bot) if (message.content.includes("https://discord.gg/") || message.content.includes("https://discordapp.com/invite/")) try {message.author.send("Vous n'avez pas l'autorisation de poster des liens vers d'autres discord."), message.delete()} catch (error) {console.log(error)}
 })
 
 client.on('ready', () => console.log('OK'));
