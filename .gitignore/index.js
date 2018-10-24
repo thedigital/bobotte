@@ -14,4 +14,4 @@ client.on('message', function (message) {
 })
 
 client.on('ready', () => console.log('OK'));
-client.login(config.token)
+client.login(process.env.TOKEN)
