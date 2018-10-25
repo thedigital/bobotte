@@ -3,7 +3,7 @@ const client = new Discord.Client({autoReconnect: true, max_message_cache: 0});
 const spamCounter = new Set();
 
 client.on('ready', function () {
-    client.user.setActivity('Terrasser des Titans !').catch(console.error)
+    client.user.setActivity('Tap Titan 3 (bêta)').catch(console.error)
 })
 
 client.on('message', function (message) {
