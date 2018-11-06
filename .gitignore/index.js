@@ -1,6 +1,15 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({autoReconnect: true, max_message_cache: 0});
 const spamCounter = new Set();
+const low = require('lowdb')
+const FileSync = require ('lowdb/adapters/FileSync')
+
+const adapter = new FileSync('rotation.json')
+const dbrot = low(adapter)
+const adapter2 = new FileSync('tournois.json')
+const dbtournois = low(adapter2)
+
+var unique = 1
 
 client.on('ready', function () {
     client.user.setActivity('Tap Titan 3 (bêta)').catch(console.error)
