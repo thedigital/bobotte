@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client({autoReconnect: true, max_message_cache: 0});
 const spamCounter = new Set();
-const low = require('lowdb')
 
 client.on('ready', function () {
     client.user.setActivity('Tap Titan 3 (bêta)').catch(console.error)
