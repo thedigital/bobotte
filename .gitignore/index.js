@@ -9,8 +9,6 @@ const dbrot = low(adapter)
 const adapter2 = new FileSync('tournois.json')
 const dbtournois = low(adapter2)
 
-var unique = 1
-
 client.on('ready', function () {
     client.user.setActivity('Tap Titan 3 (bêta)').catch(console.error)
 })
@@ -34,8 +32,9 @@ if (nmbjour == 0){
     var jour = 'samedi'
 }
 
+var numberunique = Number(dbrot.get("unique").map('value').value())
 
-if (nmbjour == 2 && unique == 1){
+if (nmbjour == 2 && numberunique == 1){
     var numberloot = Number(dbrot.get("rotation").map('loot').value())
 dbrot.get("rotation").find({ loot: numberloot}).assign({ loot: numberloot += 1 }).write()
 if(numberloot === 4){
@@ -52,8 +51,8 @@ var loot = dbtournois.get("loot").map(numberloot).value()
 var boost = dbtournois.get("boost").map(numberboost).value()
 
     message.guild.channels.get('509422880665108490').send(`**Prochain Tournoi** __${loot}__ avec __${boost}__`)
-    unique --
-} else if (nmbjour == 6 && unique == 1){
+    dbrot.get("unique").find({ value: numberunique}).assign({ value: numberunique -=1 }).write()
+} else if (nmbjour == 6 && numberunique == 1){
     var numberloot = Number(dbrot.get("rotation").map('loot').value())
 dbrot.get("rotation").find({ loot: numberloot}).assign({ loot: numberloot += 1 }).write()
 if(numberloot === 4){
@@ -69,13 +68,13 @@ if(numberboost === 11){
 var loot = dbtournois.get("loot").map(numberloot).value()
 var boost = dbtournois.get("boost").map(numberboost).value()
     message.guild.channels.get('509422880665108490').send(`**Prochain Tournoi** __${loot}__ avec __${boost}__`)
-    unique --
+    dbrot.get("unique").find({ value: numberunique}).assign({ value: numberunique -=1 }).write()
 } else {
     console.log('aucun tournoi')
 }
 
-if(nmbjour !=2 && nmbjour !=6 && unique == 0){
-    unique ++
+if(nmbjour !=2 && nmbjour !=6 && numberunique == 0){
+    dbrot.get("unique").find({ value: numberunique}).assign({ value: numberunique +=1 }).write()
 }
 if (message.content === 'invitelink'){
   message.channel.send('https://discord.gg/Mv5zU4g')
