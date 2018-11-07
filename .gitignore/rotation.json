@@ -4,5 +4,10 @@
       "loot": 2,
       "boost": 2
     }
+  ],
+  "unique": [
+    {
+      "value": 1
+    }
   ]
 }
