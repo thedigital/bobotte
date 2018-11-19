@@ -20,16 +20,12 @@ const configAdapter = new FileSync('config.json');
 const current = low(currentAdapter)
 const config = low(configAdapter)
 
-
 const channel = '513846075388461078';
 const invitelink = 'https://discord.gg/GezqzgX';
 
 
 const configData = config.value();
 let currentData = current.value();
-
-
-// client.on('ready', () => console.log('OK'));
 
 client.on('ready', function () {
     console.log('Connecté !');
@@ -44,7 +40,7 @@ client.on('ready', function () {
         });
     });
 
-    client.user.setActivity('Tap Titan 3 (bêta)').catch(console.error)
+    client.user.setActivity('mange des pommes').catch(console.error)
 });
 
 client.on('message', function (message) {
@@ -71,15 +67,6 @@ client.on('message', function (message) {
     if (primaryCommand === 't') {
         let now = new Date();
 
-        let tournaments = [
-            {
-                day: 0,
-                hour: 1,
-            }, {
-                day: 3,
-                hour: 1,
-            },
-        ];
 
         let displayTournaments = [
             currentData.last
@@ -87,54 +74,68 @@ client.on('message', function (message) {
 
 
         // calcul des dates des prochains configData
-        // ameliorer la generation du calendrier
-        for (let i = 0; i < tournaments.length; i++) {
+        for (let i = 0; i < 8; i++) {
             let tmpDate = new Date();
-            tmpDate.setDate(tmpDate.getDate() + (tournaments[i].day + 7 - tmpDate.getDay()) % 7);
-            tmpDate.setHours(tournaments[i].hour, 0, 0, 0);
-            tmpDate.setMilliseconds(0);
+            tmpDate.setTime(tmpDate.getTime() + (86400000 * i));
 
-            console.log(tmpDate);
-
-            displayTournaments.push(tmpDate.getTime());
+            // si c'est un jour de tournoi, on garde la date
+            if (configData.tournaments.days.includes(tmpDate.getDay())) {
+                tmpDate.setHours(configData.tournaments.hour, 0, 0);
+                tmpDate.setMilliseconds(0);
+                displayTournaments.push(tmpDate.getTime());
+            }
         }
 
-        // tri des configData à venir
+        // tri des tournois
         displayTournaments = _(displayTournaments).sortBy(function(tournament) {
             return tournament;
         }).value();
-        console.log('prochain tournois', displayTournaments);
+        // console.log('prochain tournois', displayTournaments);
 
-
-        // detection du tournoi en cours
-
-        // let currentTournament = _(displayTournaments).filter(function(tournament) {
-        //     if (now.getTime() >= tournament.getTime() && now.getTime() < tournament.getTime() + 86400000) {
-        //         console.log(now, tournament, tournament + 86400000);
-        //     }
-        //     return now.getTime() >= tournament.getTime() && now.getTime() < tournament.getTime() + 86400000;
-        // }).value();
 
         // si le dernier tournoi est fini
         if (currentData.last + 86400000 < now.getTime()) {
-            console.log('nouveau tournoi');
+            // console.log('nouveau tournoi');
 
-            // on met a jour les données du tournoi à venir
+            // on prévient de la fin du tournoi en cours
+            let label = 'FIN DU TOURNOI';
+            let loot = configData.loots[currentData.loot];
+            let boost = configData.boosts[currentData.boost];
+            message.guild.channels.get(channel)
+                .send(`**FIN DU TOURNOI** : __${loot}__ avec __${boost}__`)
+
+            // on met a jour le fichier semaphore avec les données du tournoi à venir
             currentData = {
-                last: displayTournaments[0],
+                last: displayTournaments[1],
                 loot: (currentData.loot + 1) % configData.loots.length,
                 boost: (currentData.boost + 1) % configData.boosts.length,
             };
 
             // écriture des données du tournoi en cours dans le fichier current
             current.assign(currentData).write();
+
+            // on enleve le premier élément qui n'est plus actif
+            displayTournaments.slice(0, 1);
         }
 
+
         // on prévient sur le channel
-        message.guild.channels.get(channel)
-            .send(`**Prochain Tournoi** __${configData.loots[currentData.loot]}__ avec __${configData.boosts[currentData.boost]}__`)
+        for (let i = 0; i < displayTournaments.length; i++) {
+            let label = 'Prochain Tournoi';
+            let loot = configData.loots[(currentData.loot + i) % configData.loots.length];
+            let boost = configData.boosts[(currentData.boost + i) % configData.boosts.length];
 
+            if (i == 0 && now.getTime() < currentData.last + 86400000) {
+                label = 'Tournoi en cours';
+            } else if (i == 1 && now.getTime() < currentData.last + 86400000) {
+                label = 'Prochain tournoi (' + new Intl.DateTimeFormat().format(new Date(displayTournaments[i])) + ')';
+            } else {
+                label = 'Tournoi du ' + new Intl.DateTimeFormat().format(new Date(displayTournaments[i]));
+            }
 
+            message.guild.channels.get(channel)
+                .send(`**${label}** : __${loot}__ avec __${boost}__`)
+        }
 
 
 

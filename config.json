@@ -15,5 +15,11 @@
         "3x Bonus de chevalier boost",
         "+20% Remboursement de mana",
         "1.5x Reliques de prestige"
-    ]
+    ],
+    "tournaments": {
+        "days": [
+            0, 3
+        ],
+        "hour": 1
+    }
 }
