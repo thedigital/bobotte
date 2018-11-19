@@ -67,13 +67,13 @@ client.on('message', function (message) {
     if (primaryCommand === 't') {
         let now = new Date();
 
-
+        // on initilise les tournois à venir avec le dernier tournoi connu
         let displayTournaments = [
             currentData.last
         ];
 
 
-        // calcul des dates des prochains configData
+        // calcul des dates des prochains tournois (dans les 8 jours à venir)
         for (let i = 0; i < 8; i++) {
             let tmpDate = new Date();
             tmpDate.setTime(tmpDate.getTime() + (86400000 * i));
@@ -119,7 +119,7 @@ client.on('message', function (message) {
         }
 
 
-        // on prévient sur le channel
+        // on prévient sur le channel des tournois en cours et à venir
         for (let i = 0; i < displayTournaments.length; i++) {
             let label = 'Prochain Tournoi';
             let loot = configData.loots[(currentData.loot + i) % configData.loots.length];
