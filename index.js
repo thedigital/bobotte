@@ -64,6 +64,16 @@ client.on('message', function (message) {
         message.channel.send(invitelink)
     }
 
+    // déclencher mise à jour tournoi toutes 15 min
+    if (primaryCommand === "loop") {
+        var interval = setInterval (function () {
+            // use the message's channel (TextChannel) to send a new message
+            message.guild.channels.get(channel)
+                .send("123")
+                .catch(console.error); // add error handling here
+        }, 1 * 1000 * 60 * 15); // 15 mmin
+    }
+
     if (primaryCommand === 't') {
         let now = new Date();
 
