@@ -76,14 +76,9 @@ client.on('message', function (message) {
         message.channel.send(invitelink)
     }
 
-    // déclencher mise à jour tournoi toutes 15 min
-    // if (primaryCommand === "loop") {
-    //
-    // }
-    //
-    // if (primaryCommand === 't') {
-    //     displayTournament();
-    // }
+    if (primaryCommand === 'tournament' || primaryCommand === 't') {
+        displayTournament();
+    }
 })
 
 client.login(process.env.TOKEN)
